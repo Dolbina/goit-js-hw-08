@@ -57,7 +57,7 @@ function populateTextarea() {
   let formDataParse = {};
 try{
      formDataParse = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    console.log(formDataParse);
+    
     if (formDataParse.message) {
       refs.textarea.value = formDataParse.message;}
     if (formDataParse.email) {
