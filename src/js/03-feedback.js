@@ -11,22 +11,22 @@ const STORAGE_KEY = 'feedback-form-state';
 // створює пустий об'єкт для запису данних
 const formData = {};
 
-// Знаходить form та textarea
+// Знаходить form та textarea, input
 const refs = {
   form: document.querySelector('.feedback-form'),
   textarea: document.querySelector('.feedback-form textarea'),
   input: document.querySelector('.feedback-form input'),
 };
 
-// Додає слухачів до form та textarea
+// Додає слухачів до form
 refs.form.addEventListener('submit', onFormSubmit);
 refs.form.addEventListener('input', throttle(onFormInput, 500));
 
-// Визиває функцію, що получає зі сховища повідомлення з ключем 'feedback-form-state' та перевіряє є повідомлення з таким ключем. Якщо є, то оновлюємо DOM.
+// Визиває функцію, що отримує зі сховища повідомлення з ключем 'feedback-form-state' та перевіряє є повідомлення з таким ключем. Якщо є, то оновлюємо DOM.
 
 populateTextarea();
 
-//  Скидаємо дефолтне перезавантаження сторінки при submit, відправляємо форму та очищуємо
+//  Скидає дефолтне перезавантаження сторінки при submit, перевіряє чи заповненні imput та textarea(якщо не заповненні, то видає повідомлення, що повинні бути заповненні), відправляє форму та очищує
 
 function onFormSubmit(event) {
     event.preventDefault();
@@ -39,22 +39,22 @@ function onFormSubmit(event) {
     localStorage.removeItem(STORAGE_KEY);
 }
 
-// Получення значення поля textarea та збереження його в локальному сховищі
+// Отримання значення полів та збереження їх у локальному сховищі
  function onFormInput(event) {
    event.preventDefault();
    // записує до об'єкту ім'я поля та його значення
    formData[event.target.name] = event.target.value;
 
-   // Данні перетворює на стороку та записує у локальне сховище
+   // Данні перетворює на рядок та записує у локальне сховище
    let formDataJSON = JSON.stringify(formData);
-   //console.log(formDataJSON);
    localStorage.setItem(STORAGE_KEY, formDataJSON);
  }
 
-// функція, що получає зі сховища повідомлення з ключем 'feedback-form-state' та перевіряє є повідомлення з таким ключем. Якщо є, то оновлюємо DOM.
+// функція, що отримує зі сховища повідомлення з ключем 'feedback-form-state' та перевіряє є повідомлення з таким ключем. Якщо є, то оновлюємо DOM.
+// Використовує конструкцію try... catch, щоб запобігти "падіння" скрипта, якщо протитали не валідний JSON
 
 function populateTextarea() {
-  let formDataParse ={};
+  let formDataParse = {};
 try{
      formDataParse = JSON.parse(localStorage.getItem(STORAGE_KEY));
     console.log(formDataParse);
@@ -63,11 +63,9 @@ try{
     if (formDataParse.email) {
       refs.input.value = formDataParse.email;
     }
-  
   }
 catch(err){console.log(err);}
-
-  
+ 
 }
 
 
