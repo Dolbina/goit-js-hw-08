@@ -9,7 +9,9 @@ import throttle from "lodash.throttle";
 const STORAGE_KEY = 'feedback-form-state';
 
 // створює пустий об'єкт для запису данних
-const formData = {};
+let formData = {};
+
+function getFormData () {return{ email: refs.input.value, message: refs.textarea.value }}; 
 
 // Знаходить form та textarea, input
 const refs = {
@@ -43,7 +45,8 @@ function onFormSubmit(event) {
  function onFormInput(event) {
    event.preventDefault();
    // записує до об'єкту ім'я поля та його значення
-   formData[event.target.name] = event.target.value;
+   //formData[event.target.name] = event.target.value;
+formData = getFormData();
 
    // Данні перетворює на рядок та записує у локальне сховище
    let formDataJSON = JSON.stringify(formData);
@@ -59,9 +62,11 @@ try{
      formDataParse = JSON.parse(localStorage.getItem(STORAGE_KEY));
     
     if (formDataParse.message) {
-      refs.textarea.value = formDataParse.message;}
+      refs.textarea.value = formDataParse.message;
+    formData = getFormData();}
     if (formDataParse.email) {
       refs.input.value = formDataParse.email;
+      formData = getFormData();
     }
   }
 catch(err){console.log(err);}
