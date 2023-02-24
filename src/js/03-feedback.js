@@ -15,24 +15,12 @@ const formData = {};
 const refs = {
   form: document.querySelector('.feedback-form'),
   textarea: document.querySelector('.feedback-form textarea'),
+  input: document.querySelector('.feedback-form input'),
 };
 
 // Додає слухачів до form та textarea
 refs.form.addEventListener('submit', onFormSubmit);
-refs.textarea.addEventListener('input', throttle(onTextareaInput, 500));
-
-// додає слухача до form 
-refs.form.addEventListener('input', (event) => {
-    event.preventDefault();
-    // записує до об'єкту ім'я поля та його значення
-  formData[event.target.name] = event.target.value;
-    
-    // Данні перетворює на стороку та записує у локальне сховище
-  let formDataJSON = JSON.stringify(formData);
-  console.log(formDataJSON);
-    localStorage.setItem(STORAGE_KEY, formDataJSON);
-    
-});
+refs.form.addEventListener('input', throttle(onFormInput, 500));
 
 // Визиває функцію, що получає зі сховища повідомлення з ключем 'feedback-form-state' та перевіряє є повідомлення з таким ключем. Якщо є, то оновлюємо DOM.
 
@@ -42,24 +30,45 @@ populateTextarea();
 
 function onFormSubmit(event) {
     event.preventDefault();
+    if (refs.textarea.value === "" || refs.input.value === "") {
+        return alert('Please fill in all the fields!');
+    }
     console.log('отправляем форму');
+    console.log(formData);
     event.currentTarget.reset();
     localStorage.removeItem(STORAGE_KEY);
 }
 
 // Получення значення поля textarea та збереження його в локальному сховищі
-function onTextareaInput(event) {
-    const message = event.target.value;
-    localStorage.setItem(STORAGE_KEY, message);
-    
-}
+ function onFormInput(event) {
+   event.preventDefault();
+   // записує до об'єкту ім'я поля та його значення
+   formData[event.target.name] = event.target.value;
+
+   // Данні перетворює на стороку та записує у локальне сховище
+   let formDataJSON = JSON.stringify(formData);
+   //console.log(formDataJSON);
+   localStorage.setItem(STORAGE_KEY, formDataJSON);
+ }
 
 // функція, що получає зі сховища повідомлення з ключем 'feedback-form-state' та перевіряє є повідомлення з таким ключем. Якщо є, то оновлюємо DOM.
 
 function populateTextarea() {
-    let savedMessage = localStorage.getItem(STORAGE_KEY);
-    if (savedMessage) {
-        console.log(savedMessage);
-        refs.textarea.value = savedMessage;
+  let formDataParse ={};
+try{
+     formDataParse = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    console.log(formDataParse);
+    if (formDataParse.message) {
+      refs.textarea.value = formDataParse.message;}
+    if (formDataParse.email) {
+      refs.input.value = formDataParse.email;
     }
+  
+  }
+catch(err){console.log(err);}
+
+  
 }
+
+
+
