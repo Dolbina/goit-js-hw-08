@@ -63,11 +63,12 @@ try{
     
     if (formDataParse.message) {
       refs.textarea.value = formDataParse.message;
-    formData = getFormData();}
+    }
     if (formDataParse.email) {
       refs.input.value = formDataParse.email;
-      formData = getFormData();
+      
     }
+    formData = getFormData();
   }
 catch(err){console.log(err);}
  
